@@ -8,19 +8,18 @@ CREATE TABLE alunos ( -- cria uma tabela
 	curso VARCHAR(150) NOT NULL -- cria uma celula de VARCHAR com 150 de limite de caractesres 
 );
 
-SHOW TABLES;
+SHOW TABLES; -- mostra as tabelas
 
-SELECT * FROM alunos;
 
-SELECT * FROM alunos;
+SELECT * FROM alunos; -- mostra os valores dentro das tabelas
 
-DELETE FROM alunos;
+DELETE FROM alunos; -- deleta os valores da tabela selecionada, TODOS ELES
 
-INSERT INTO alunos (nome, curso)
+INSERT INTO alunos (nome, curso) -- adiciona valores as celuas escolhidas e pode acumular em ter que repetir os values
 VALUES ('Brenno', 'Desenvolvimento de Sistemas'),
 		('Larissa', 'Banco de Dados'),
 		('Tiago', 'Segurança Cibernetica'),
 		('Matheus', 'Analise de Redes');
 		
-SELECT * FROM alunos;
+SELECT * FROM alunos; -- mostra os valores de alunos
 		
