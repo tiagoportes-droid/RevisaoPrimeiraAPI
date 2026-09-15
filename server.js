@@ -41,45 +41,51 @@ app.get("/alunos", async (req, res) => {
   }
 });
 
-app.get("/alunos/:id", (req, res) => {
+app.get("/alunos/:id", async (req, res) => {
   const id = Number(req.params.id);
   const alunos = ALUNOS.find((a) => a.id === id);
 
-  if (!alunos) {
-    return res.status(404).json({
-      mensagem: "Aluno não encontrado.",
+  try {
+    const [resultado] = await conexao.query(`
+        SELECT * FROM alunos WHERE id = ${id};
+        `);
+    res.status(200).json(resultado);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      mensagem: "Erro ao buscar alunos.",
     });
   }
 
   res.status(200).json(alunos);
 });
 
-app.post("/alunos/cadastrar", (req, res) => {
+app.post("/alunos/cadastrar", async (req, res) => {
   const { nome, curso } = req.body;
 
   if (!nome || !curso) {
-    return res.status(400).json({
-      mensagem: "Nome e curso são obrigatorios.",
-    });
+    return res.status(400).json({ mensagem: "Nome e curso são obrigatórios." });
   }
 
-  const novoId =
-    ALUNOS.length > 0 ? Math.max(...ALUNOS.map((aluno) => aluno.id)) + 1 : 1;
+  try {
+    const [resultado] = await conexao.query(
+      "INSERT INTO alunos (nome, curso) VALUES (?, ?)",
+      [nome, curso],
+    );
 
-  const novoAluno = {
-    id: novoId,
-    nome: nome,
-    curso: curso,
-  };
-
-  ALUNOS.push(novoAluno);
-
-  res.status(201).json({
-    mensagem: "Alunos cadastrado com sucesso.",
-  });
+    res.status(201).json({
+      mensagem: "Aluno cadastrado com sucesso!",
+      id: resultado.insertId,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      mensagem: "Erro ao cadastrar aluno.",
+    });
+  }
 });
 
-app.put("/alunos/:id", (req, res) => {
+app.put("/alunos/:id", async (req, res) => {
   const id = Number(req.params.id);
   const { nome, curso } = req.body;
 
@@ -92,21 +98,28 @@ app.put("/alunos/:id", (req, res) => {
   }
 
   if (!nome || !curso) {
-    return req(400).json({
-      mensagem: "Nome e curso são obrigatorios.",
-    });
+    return res.status(400).json({ mensagem: "Nome e curso são obrigatórios." });
   }
 
-  ALUNOS[indice] = {
-    id: id,
-    nome: nome,
-    curso: curso,
-  };
+  try {
+    const [resultado] = await conexao.query(
+      `UPDATE alunos
+      SET nome = ?, curso = ?
+      WHERE id = ?;
+    `,
+      [nome, curso, id],
+    );
 
-  res.status(200).json({
-    mensagem: "Alunos atualizado com sucesso",
-    aluno: ALUNOS[indice],
-  });
+    res.status(201).json({
+      mensagem: "Alunos atualizado com sucesso",
+      id: resultado.insertId,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      mensagem: "Aluno não encontrado.",
+    });
+  }
 });
 
 const PORTA = 3000;

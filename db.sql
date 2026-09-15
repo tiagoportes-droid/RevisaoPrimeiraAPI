@@ -23,3 +23,4 @@ VALUES ('Brenno', 'Desenvolvimento de Sistemas'),
 		
 SELECT * FROM alunos; -- mostra os valores de alunos
 		
+SELECT * FROM alunos WHERE id = 3; -- seleciona o valor com id igual a 3
