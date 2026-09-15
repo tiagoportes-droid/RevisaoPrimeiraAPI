@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const conexao = require("./db.js")
 // import express from express;
 // import cors from cors;
 
@@ -26,8 +27,20 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/alunos", (req, res) => {
-  res.json(ALUNOS);
+app.get("/alunos",async  (req, res) => {
+  
+    try {
+    const resulatado = await conexao.query(`
+        SELECT * FROM alunos;
+        `)
+        res.status(200).json(resulatado);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+        mensagem: "Erro ao buscar alunos."
+    })
+  }
+  
 });
 
 app.get("/alunos/:id", (req, res) => {
