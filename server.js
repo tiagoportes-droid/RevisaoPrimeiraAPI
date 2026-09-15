@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const conexao = require("./db.js")
+const conexao = require("./db.js");
 // import express from express;
 // import cors from cors;
 
@@ -27,20 +27,18 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/alunos",async  (req, res) => {
-  
-    try {
-    const resulatado = await conexao.query(`
+app.get("/alunos", async (req, res) => {
+  try {
+    const [resultado] = await conexao.query(`
         SELECT * FROM alunos;
-        `)
-        res.status(200).json(resulatado);
+        `);
+    res.status(200).json(resultado);
   } catch (error) {
     console.log(error);
     res.status(500).json({
-        mensagem: "Erro ao buscar alunos."
-    })
+      mensagem: "Erro ao buscar alunos.",
+    });
   }
-  
 });
 
 app.get("/alunos/:id", (req, res) => {
@@ -93,22 +91,22 @@ app.put("/alunos/:id", (req, res) => {
     });
   }
 
-  if(!nome || !curso){
+  if (!nome || !curso) {
     return req(400).json({
-        mensagem: "Nome e curso são obrigatorios."
-    })
+      mensagem: "Nome e curso são obrigatorios.",
+    });
   }
 
-  ALUNOS[indice] ={
+  ALUNOS[indice] = {
     id: id,
     nome: nome,
-    curso: curso
-  }
+    curso: curso,
+  };
 
   res.status(200).json({
     mensagem: "Alunos atualizado com sucesso",
-    aluno: ALUNOS[indice]
-  })
+    aluno: ALUNOS[indice],
+  });
 });
 
 const PORTA = 3000;
